@@ -1,5 +1,12 @@
 #pragma once
 
+enum class Color : unsigned char
+{
+    BLACK,
+    RED,
+    BLUE
+};
+
 class Shape
 {
 public:
@@ -8,4 +15,6 @@ public:
     virtual double getArea() const = 0;
     virtual double getPerimeter() const = 0;
     virtual void print() const;
+
+    Color color;
 };
