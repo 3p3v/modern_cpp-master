@@ -13,6 +13,13 @@ using namespace std;
 
 using Collection = vector<shared_ptr<Shape>>;
 
+
+template<class DerivedType, class... Arguments>
+std::shared_ptr<Shape> make_shape(Arguments&&... args)
+{
+    return std::shared_ptr<Shape>(new DerivedType(std::forward<Arguments>(args)...));
+}
+
 constexpr auto nth_fib(const int& n) 
 {
     unsigned long int num1 = 0;
@@ -27,42 +34,21 @@ constexpr auto nth_fib(const int& n)
     return num1;
 }
 
-/*auto sortByArea(shared_ptr<Shape> first, shared_ptr<Shape> second)
-{
-    if(first == nullptr || second == nullptr)
-        return false;
-    return (first->getArea() < second->getArea());
-}*/
-
-/*auto perimeterBiggerThan20(shared_ptr<Shape> s)
-{
-    if(s)
-        return (s->getPerimeter() > 20);
-    return false;
-}*/
-
-/*auto areaLessThan10(shared_ptr<Shape> s)
-{
-    if(s)
-        return (s->getArea() < 10);
-    return false;
-}*/
-
-void printCollectionElements(const Collection& collection)
+auto printCollectionElements(const Collection& collection)
 {
     for(const auto& it: collection)
         if(it)
             (it)->print();
 }
 
-void printAreas(const Collection& collection)
+auto printAreas(const Collection& collection)
 {
     for(const auto& it: collection)
         if(it)
             cout << (it)->getArea() << std::endl;
 }
 
-void findFirstShapeMatchingPredicate(const Collection& collection,
+auto findFirstShapeMatchingPredicate(const Collection& collection,
                                      std::function<bool(shared_ptr<Shape>)>predicate,
                                      std::string info)
 {
@@ -80,6 +66,9 @@ void findFirstShapeMatchingPredicate(const Collection& collection,
 
 int main()
 {
+    auto dd = make_shape<Circle>(12);
+    cout<<dd.get()->getArea()<<endl;
+    
     auto sortByArea = [](shared_ptr<Shape> first, shared_ptr<Shape> second)
     {
         if(first == nullptr || second == nullptr)
@@ -100,13 +89,15 @@ int main()
             return (s->getArea() < x);
         return false;
     };
-
-    //std::function<bool(shared_ptr<Shape>&)> areaLessThanXF = areaLessThanX;
     
     cout<<"N-ty wyraz ciagu:"<<endl;
     cout<< nth_fib(45) <<endl;
-    
-    Collection shapes;
+
+    Collection shapes{
+        make_unique<Circle>(Color::BLUE),
+        make_unique<Square>(Color::BLACK),
+        make_unique<Rectangle>(Color::RED)
+        };
     shapes.push_back(make_shared<Circle>(2.0));
     shapes.push_back(make_shared<Circle>(3.0));
     shapes.push_back(nullptr);
@@ -114,6 +105,11 @@ int main()
     shapes.push_back(make_shared<Rectangle>(10.0, 5.0));
     shapes.push_back(make_shared<Square>(3.0));
     shapes.push_back(make_shared<Circle>(4.0));
+    //zad5
+    Circle c1(12, Color::BLACK);
+    shapes.push_back(shared_ptr<Circle>(new Circle(move(c1))));
+    Circle c2(50, Color::RED);
+    shapes.push_back(shared_ptr<Circle>(new Circle(move(c2))));
     printCollectionElements(shapes);
 
     cout << "Areas before sort: " << std::endl;

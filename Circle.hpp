@@ -6,15 +6,23 @@ class Circle final : public Shape
 {
 public:
     Circle(double r);
-    Circle(const Circle & other) = default;
+    Circle(Color c) : Shape(c) {};
+    //HW zad 4//
+    Circle(double r, Color c) : Circle(c) {r_ = r;}
 
-    double getArea() const override;
-    double getPerimeter() const override;
+    Circle(const Circle & other) = default;
+    Circle(Circle&& other) noexcept = default;
+    Circle& operator=(Circle&& other) noexcept = default;
+    Circle& operator=(const Circle& other) = default;
+ 
+    double getArea() const noexcept override;
+    double getPerimeter() const noexcept override;
     double getRadius() const;
     void print() const override;
+    [[deprecated("**  deprecated  **")]]double getPi();
 
 private:
-    Circle() = default; // doesn't allow to call default constructor
+    Circle() = delete; // doesn't allow to call default constructor
 
     double r_;
 };
