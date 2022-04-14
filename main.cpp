@@ -17,7 +17,7 @@ using Collection = vector<shared_ptr<Shape>>;
 template<class DerivedType, class... Arguments>
 std::shared_ptr<Shape> make_shape(Arguments&&... args)
 {
-    return std::shared_ptr<Shape>(new DerivedType(std::forward<Arguments>(args)...));
+    return std::shared_ptr<DerivedType>(new DerivedType(std::forward<Arguments>(args)...));
 }
 
 constexpr auto nth_fib(const int& n) 
@@ -66,9 +66,6 @@ auto findFirstShapeMatchingPredicate(const Collection& collection,
 
 int main()
 {
-    auto dd = make_shape<Circle>(12);
-    cout<<dd.get()->getArea()<<endl;
-    
     auto sortByArea = [](shared_ptr<Shape> first, shared_ptr<Shape> second)
     {
         if(first == nullptr || second == nullptr)
@@ -94,9 +91,9 @@ int main()
     cout<< nth_fib(45) <<endl;
 
     Collection shapes{
-        make_unique<Circle>(Color::BLUE),
-        make_unique<Square>(Color::BLACK),
-        make_unique<Rectangle>(Color::RED)
+        make_shared<Circle>(Color::BLUE),
+        make_shared<Square>(Color::BLACK),
+        make_shared<Rectangle>(Color::RED)
         };
     shapes.push_back(make_shared<Circle>(2.0));
     shapes.push_back(make_shared<Circle>(3.0));
